@@ -1,8 +1,10 @@
 var WatchOut = function() {
   this._score = 0;
+  this._highScore = 0;
   this._height = 400;
   this._width = 800;
   this._enemies = 20;
+  this._numCollisions = 0;
   this._svg;
   this.init();
   this._player = new Player(this._width / 2, this._height / 2);
@@ -37,8 +39,35 @@ WatchOut.prototype.update = function(data) {
                 .attr('cy', function(d, i) {
                   return Math.random() * this._height;
                 }.bind(this));
+  var arr = d3.selectAll('.enemies')[0];
   this._player.update();
+  var playerCx = d3.select('.player').attr('cx');
+  var playerCy = d3.select('.player').attr('cy');
+  var playerR = d3.select('.player').attr('r');
+  this._score++;
+  for (var i = 0; i < arr.length; i++){
+    var cx = d3.select(arr[i]).attr('cx') - playerCx;
+    var cy = d3.select(arr[i]).attr('cy') - playerCy;
+    var radiusSum = d3.select(arr[i]).attr('r') + playerR;
+    var distance = Math.sqrt(Math.pow(cx, 2) + Math.pow(cy, 2));
+
+    if(distance < radiusSum){
+      this.gotHit();
+    }
+  }
+  console.log(document.getElementById('cscore'));
+  document.getElementById('cscore').innerHTML = this._score;
 };
+
+WatchOut.prototype.gotHit = function(){
+  document.getElementById('colscore').innerHTML =  ++this._numCollisions;
+  if(this._score > this._highScore){
+    this._highScore = this._score;
+    document.getElementById('hscore').innerHTML = this._highScore;
+  }
+
+  this._score = 0;
+}
 
 WatchOut.prototype.run = function() {
   setInterval(this.update.bind(this), 1000);
