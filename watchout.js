@@ -101,3 +101,35 @@ WatchOut.prototype.movePlayer = function(x, y) {
     .attr('cx', x)
     .attr('cy', y);
 };
+
+
+$(function() {
+  var FADE_TIME = 150; // ms
+  var TYPING_TIMER_LENGTH = 400; // ms
+  var $usernameInput = $('.usernameInput'); // Input for username
+  var $loginPage = $('.login.page'); // The login page
+  var username;
+  // Sets the client's username
+  function setUsername () {
+    console.log("About to set username");
+    username = cleanInput($usernameInput.val().trim());
+
+    // If the username is valid
+    if (username) {
+      console.log("username is valid");
+      $loginPage.fadeOut();
+      $chatPage.show();
+      $loginPage.off('click');
+      $currentInput = $inputMessage.focus();
+
+      // Tell the server your username
+      socket.emit('add user', username);
+    }
+  }
+
+  function cleanInput (input) {
+    return $('<div/>').text(input).text();
+  }
+
+  setUsername();
+  });

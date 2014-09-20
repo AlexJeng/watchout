@@ -1,6 +1,8 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var usernames = {};
+var numUsers = 0;
 
 server.listen(8080);
 
@@ -25,6 +27,12 @@ io.on('connection', function (socket) {
   socket.broadcast.emit('newUser', 'New Challenger');
   socket.on('movedPlayer', function(d){
     socket.broadcast.emit('move', d);
+  });
+  socket.on('add user', function(username){
+    console.log("Added username: " + username)
+    socket.username = username;
+    usernames[username] = username;
+    ++numUsers;
   });
 });
 
