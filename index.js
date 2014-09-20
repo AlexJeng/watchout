@@ -23,15 +23,11 @@ app.get('/player.js', function(req, res) {
 
 io.on('connection', function (socket) {
   socket.broadcast.emit('newUser', 'New Challenger');
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  socket.on('movedPlayer', function(d){
+    socket.broadcast.emit('move', d);
   });
-
-
-  // updateEnemyPosition();
-
 });
+
 
   var numEnemies = 20;
   var screenWidth = 800;

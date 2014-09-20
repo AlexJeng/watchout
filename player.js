@@ -13,9 +13,12 @@ Player.prototype.init = function() {
   var svg = d3.select('svg');
   var drag = d3.behavior.drag()
     .on('drag', function(d) {
+      var x = Math.max(radius, Math.min(width - radius, d3.event.x));
+      var y = Math.max(radius, Math.min(height - radius, d3.event.y));
         d3.select('.player')
-          .attr('cx', Math.max(radius, Math.min(width - radius, d3.event.x)))
-          .attr('cy', Math.max(radius, Math.min(height - radius, d3.event.y)));
+          .attr('cx', x)
+          .attr('cy', y);
+          socket.emit('movedPlayer', [x,y]);
     });
   svg.append('circle')
       .attr('cx', this._xpos)

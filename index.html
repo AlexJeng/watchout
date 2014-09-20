@@ -19,14 +19,12 @@
     <script>
       var socket = io('10.4.31.229');
       var watchout = new WatchOut();
-      // watchout.run();
-      socket.on('news', function (data) {
-        // socket.emit('my other event', { my: 'data' });
-      });
       socket.on('newUser', function(data) {
 
       });
-
+      socket.on('move', function(data){
+        watchout.movePlayer(data[0], data[1]);
+      });
       socket.on('enemyLocations', function(data){
         watchout.update(data);
       })

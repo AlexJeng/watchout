@@ -96,4 +96,8 @@ WatchOut.prototype.setScore = function(n) {
   this._score = n;
 };
 
-
+WatchOut.prototype.movePlayer = function(x, y) {
+  d3.select('.player').transition().duration(100)
+    .attr('cx', x)
+    .attr('cy', y);
+};
