@@ -30,21 +30,34 @@ WatchOut.prototype.init = function() {
 };
 
 WatchOut.prototype.update = function(data) {
-  var circle = this._svg.selectAll('.enemies')
-                .transition()
-                .duration(750)
-                .attr('cx', function(d, i) {
-                  return Math.random() * this._width;
-                }.bind(this))
-                .attr('cy', function(d, i) {
-                  return Math.random() * this._height;
-                }.bind(this));
-  var arr = d3.selectAll('.enemies')[0];
+  // console.log("UPDATE in watchout.js");
+  // var circle = this._svg.selectAll('.enemies')
+  //               .transition()
+  //               .duration(750)
+  //               .attr('cx', function(d, i) {
+  //                 return Math.random() * this._width;
+  //               }.bind(this))
+  //               .attr('cy', function(d, i) {
+  //                 return Math.random() * this._height;
+  //               }.bind(this));
+
+  var circle = this._svg.selectAll('.enemies').data(data)
+    .transition()
+    .duration(750)
+    .attr('cx', function(d){
+      return d[0][0];
+    }).attr('cy', function(d){
+      // console.log(d[0][1]);
+      return d[0][1];
+    });
+
   this._player.update();
+
   var playerCx = d3.select('.player').attr('cx');
   var playerCy = d3.select('.player').attr('cy');
   var playerR = d3.select('.player').attr('r');
-  this._score++;
+
+  var arr = d3.selectAll('.enemies')[0];
   for (var i = 0; i < arr.length; i++){
     var cx = d3.select(arr[i]).attr('cx') - playerCx;
     var cy = d3.select(arr[i]).attr('cy') - playerCy;
@@ -54,9 +67,11 @@ WatchOut.prototype.update = function(data) {
     if(distance < radiusSum){
       this.gotHit();
     }
+
+    this._score++;
   }
-  console.log(document.getElementById('cscore'));
   document.getElementById('cscore').innerHTML = this._score;
+
 };
 
 WatchOut.prototype.gotHit = function(){

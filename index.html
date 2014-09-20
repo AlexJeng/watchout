@@ -11,12 +11,26 @@
       <div class="collisions">Collisions: <span id="colscore">0</span></div>
     </div>
     <script src="d3.js" charset="utf-8"></script>
+    <script src='https://cdn.socket.io/socket.io-1.1.0.js'></script>
     <!-- <script src='vid.js'></script> -->
     <script src='watchout.js'></script>
     <script src='player.js'></script>
+
     <script>
+      var socket = io('10.4.31.229');
       var watchout = new WatchOut();
-      watchout.run();
+      // watchout.run();
+      socket.on('news', function (data) {
+        // socket.emit('my other event', { my: 'data' });
+      });
+      socket.on('newUser', function(data) {
+
+      });
+
+      socket.on('enemyLocations', function(data){
+        watchout.update(data);
+      })
+
     </script>
   </body>
 </html>

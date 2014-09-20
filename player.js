@@ -29,11 +29,4 @@ Player.prototype.init = function() {
 };
 
 Player.prototype.update = function(data) {
-  console.log('LOGGGGGG');
 };
-Player.prototype.getXPosition = function(){
-  return this._xpos;
-}
-
-
-
