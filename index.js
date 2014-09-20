@@ -25,14 +25,33 @@ app.get('/player.js', function(req, res) {
 
 io.on('connection', function (socket) {
   socket.broadcast.emit('newUser', 'New Challenger');
+
   socket.on('movedPlayer', function(d){
-    socket.broadcast.emit('move', d);
+    console.log('movedPlayer socket in index.js');
+    io.sockets.emit('move', d);
   });
+
   socket.on('add user', function(username){
+    while(usernames[username]){
+      username = username + "1";
+    }
     console.log("Added username: " + username)
     socket.username = username;
     usernames[username] = username;
     ++numUsers;
+    io.sockets.emit('player joined', username);
+
+
+  });
+
+  socket.on('disconnect', function(username){
+    console.log(socket.username + " disconnected")
+    delete usernames[socket.username];
+  });
+
+  socket.on('added player', function(username){
+    console.log("socket adding new player");
+    // watchout.addNewPlayer(username);
   });
 });
 

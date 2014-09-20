@@ -1,3 +1,10 @@
+//Todo:
+//Accept name input -done
+//Add to connected users list - done
+//Create new player for new connections
+//Handle disconnect for players
+
+
 var WatchOut = function() {
   this._score = 0;
   this._highScore = 0;
@@ -6,8 +13,10 @@ var WatchOut = function() {
   this._enemies = 20;
   this._numCollisions = 0;
   this._svg;
+  this._playerList = {};
   this.init();
-  this._player = new Player(this._width / 2, this._height / 2);
+
+  //this._player = new Player(this._width / 2, this._height / 2);
 };
 
 WatchOut.prototype.init = function() {
@@ -51,7 +60,9 @@ WatchOut.prototype.update = function(data) {
       return d[0][1];
     });
 
-  this._player.update();
+  for(var key in this._playerList){
+    this._playerList[key].update();
+  }
 
   var playerCx = d3.select('.player').attr('cx');
   var playerCy = d3.select('.player').attr('cy');
@@ -73,6 +84,15 @@ WatchOut.prototype.update = function(data) {
   document.getElementById('cscore').innerHTML = this._score;
 
 };
+
+WatchOut.prototype.addNewPlayer = function(id, color){
+  console.log("watchout adding player id: " + id);
+  var randX = Math.random() * this._width;
+  var randY = Math.random() * this._height;
+  this._playerList[id] = new Player(randX, randY, id, color)
+
+  socket.emit('added player', this._playerList[id]);
+}
 
 WatchOut.prototype.gotHit = function(){
   document.getElementById('colscore').innerHTML =  ++this._numCollisions;
@@ -96,8 +116,9 @@ WatchOut.prototype.setScore = function(n) {
   this._score = n;
 };
 
-WatchOut.prototype.movePlayer = function(x, y) {
-  d3.select('.player').transition().duration(100)
+WatchOut.prototype.movePlayer = function(id, x, y) {
+  console.log(x + ", " + y);
+  d3.selectAll('.player').filter('.'+id).transition().duration(100)
     .attr('cx', x)
     .attr('cy', y);
 };
@@ -118,9 +139,7 @@ $(function() {
     if (username) {
       console.log("username is valid");
       $loginPage.fadeOut();
-      $chatPage.show();
       $loginPage.off('click');
-      $currentInput = $inputMessage.focus();
 
       // Tell the server your username
       socket.emit('add user', username);
@@ -131,5 +150,9 @@ $(function() {
     return $('<div/>').text(input).text();
   }
 
-  setUsername();
+  $(window).keydown(function (event){
+    if(event.which === 13){
+      setUsername();
+    }
+  })
   });

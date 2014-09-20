@@ -31,11 +31,20 @@
 
       });
       socket.on('move', function(data){
-        watchout.movePlayer(data[0], data[1]);
+        //hopefully id, x, y
+        console.log('move socket in index.html');
+        console.log(data[0], data[1], data[2])
+        watchout.movePlayer(data[0], data[1], data[2]);
       });
       socket.on('enemyLocations', function(data){
         watchout.update(data);
-      })
+      });
+
+      socket.on('player joined', function(username){
+        console.log(username);
+        var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+        watchout.addNewPlayer(username, randColor);
+      });
 
     </script>
   </body>
