@@ -1,10 +1,3 @@
-//Todo:
-//Accept name input -done
-//Add to connected users list - done
-//Create new player for new connections
-//Handle disconnect for players
-
-
 var WatchOut = function() {
   this._score = 0;
   this._highScore = 0;
@@ -13,10 +6,8 @@ var WatchOut = function() {
   this._enemies = 20;
   this._numCollisions = 0;
   this._svg;
-  this._playerList = {};
   this.init();
-
-  //this._player = new Player(this._width / 2, this._height / 2);
+  this._player = new Player(this._width / 2, this._height / 2);
 };
 
 WatchOut.prototype.init = function() {
@@ -60,9 +51,7 @@ WatchOut.prototype.update = function(data) {
       return d[0][1];
     });
 
-  for(var key in this._playerList){
-    this._playerList[key].update();
-  }
+  this._player.update();
 
   var playerCx = d3.select('.player').attr('cx');
   var playerCy = d3.select('.player').attr('cy');
@@ -84,15 +73,6 @@ WatchOut.prototype.update = function(data) {
   document.getElementById('cscore').innerHTML = this._score;
 
 };
-
-WatchOut.prototype.addNewPlayer = function(id, color){
-  console.log("watchout adding player id: " + id);
-  var randX = Math.random() * this._width;
-  var randY = Math.random() * this._height;
-  this._playerList[id] = new Player(randX, randY, id, color)
-
-  socket.emit('added player', this._playerList[id]);
-}
 
 WatchOut.prototype.gotHit = function(){
   document.getElementById('colscore').innerHTML =  ++this._numCollisions;
@@ -116,43 +96,4 @@ WatchOut.prototype.setScore = function(n) {
   this._score = n;
 };
 
-WatchOut.prototype.movePlayer = function(id, x, y) {
-  console.log(x + ", " + y);
-  d3.selectAll('.player').filter('.'+id).transition().duration(100)
-    .attr('cx', x)
-    .attr('cy', y);
-};
 
-
-$(function() {
-  var FADE_TIME = 150; // ms
-  var TYPING_TIMER_LENGTH = 400; // ms
-  var $usernameInput = $('.usernameInput'); // Input for username
-  var $loginPage = $('.login.page'); // The login page
-  var username;
-  // Sets the client's username
-  function setUsername () {
-    console.log("About to set username");
-    username = cleanInput($usernameInput.val().trim());
-
-    // If the username is valid
-    if (username) {
-      console.log("username is valid");
-      $loginPage.fadeOut();
-      $loginPage.off('click');
-
-      // Tell the server your username
-      socket.emit('add user', username);
-    }
-  }
-
-  function cleanInput (input) {
-    return $('<div/>').text(input).text();
-  }
-
-  $(window).keydown(function (event){
-    if(event.which === 13){
-      setUsername();
-    }
-  })
-  });

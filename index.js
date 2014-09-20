@@ -1,8 +1,6 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var usernames = {};
-var numUsers = 0;
 
 server.listen(8080);
 
@@ -25,36 +23,15 @@ app.get('/player.js', function(req, res) {
 
 io.on('connection', function (socket) {
   socket.broadcast.emit('newUser', 'New Challenger');
-
-  socket.on('movedPlayer', function(d){
-    console.log('movedPlayer socket in index.js');
-    io.sockets.emit('move', d);
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
   });
 
-  socket.on('add user', function(username){
-    while(usernames[username]){
-      username = username + "1";
-    }
-    console.log("Added username: " + username)
-    socket.username = username;
-    usernames[username] = username;
-    ++numUsers;
-    io.sockets.emit('player joined', username);
 
+  // updateEnemyPosition();
 
-  });
-
-  socket.on('disconnect', function(username){
-    console.log(socket.username + " disconnected")
-    delete usernames[socket.username];
-  });
-
-  socket.on('added player', function(username){
-    console.log("socket adding new player");
-    // watchout.addNewPlayer(username);
-  });
 });
-
 
   var numEnemies = 20;
   var screenWidth = 800;

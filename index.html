@@ -4,13 +4,6 @@
     <link rel='stylesheet' type='css' href='styles.css'>
   </head>
   <body>
-    <li class="login page">
-      <div class="form">
-        <h3 class="title">What's your nickname?</h3>
-        <input class="usernameInput" type="text" maxlength="14" />
-      </div>
-    </li>
-
     <div class="scoreboard">
       <!-- Modify the scoreboard when important events occur in your game! -->
       <div class="high">High score: <span id="hscore">0</span></div>
@@ -19,7 +12,6 @@
     </div>
     <script src="d3.js" charset="utf-8"></script>
     <script src='https://cdn.socket.io/socket.io-1.1.0.js'></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <!-- <script src='vid.js'></script> -->
     <script src='watchout.js'></script>
     <script src='player.js'></script>
@@ -27,24 +19,17 @@
     <script>
       var socket = io('10.4.31.229');
       var watchout = new WatchOut();
+      // watchout.run();
+      socket.on('news', function (data) {
+        // socket.emit('my other event', { my: 'data' });
+      });
       socket.on('newUser', function(data) {
 
       });
-      socket.on('move', function(data){
-        //hopefully id, x, y
-        console.log('move socket in index.html');
-        console.log(data[0], data[1], data[2])
-        watchout.movePlayer(data[0], data[1], data[2]);
-      });
+
       socket.on('enemyLocations', function(data){
         watchout.update(data);
-      });
-
-      socket.on('player joined', function(username){
-        console.log(username);
-        var randColor = '#'+Math.floor(Math.random()*16777215).toString(16);
-        watchout.addNewPlayer(username, randColor);
-      });
+      })
 
     </script>
   </body>
